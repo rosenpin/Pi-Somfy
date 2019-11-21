@@ -1,15 +1,21 @@
 #!/bin/bash
 
 SERVER_ADDR="10.0.0.34"
+default_shutter="0x279621"
 
 usage="somfy {command} {shutter id} \nExample:\n\tsomfy up 0x279621"
 
-if [[ -z $1 || -z $2 ]]; then
+cmd=$1
+shutter=$2
+
+if [[ -z $cmd ]]; then
     echo -e "$usage"
     exit 1
 fi
+if [[ -z $shutter ]]; then
+    echo "no shutter provided, using default $default_shutter"
+    shutter=$default_shutter
+fi
 
-cmd=$1
-shutter=$2
 
 curl http://$SERVER_ADDR/cmd/$cmd?shutter=$shutter
