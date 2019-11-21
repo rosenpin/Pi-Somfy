@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SERVER_ADDR="10.0.0.34"
+
+usage="somfy {command} {shutter id} \nExample:\n\tsomfy up 0x279621"
+
+if [[ -z $1 || -z $2 ]]; then
+    echo -e "$usage"
+    exit 1
+fi
+
+cmd=$1
+shutter=$2
+
+curl http://$SERVER_ADDR/cmd/$cmd?shutter=$shutter
