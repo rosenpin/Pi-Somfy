@@ -67,6 +67,8 @@ class FlaskAppWrapper(MyLog):
         self.app.add_url_rule(endpoint, endpoint_name, EndpointAction(handler), methods=methods)
 
     def requestMain(self):
+        if not self.validatePassword(header=False):
+            return self.app.send_static_file("error.html")
         self.LogDebug(request.url)
         return self.app.send_static_file('index.html')
         
@@ -137,8 +139,6 @@ class FlaskAppWrapper(MyLog):
         return {'status': 'OK'}
 
     def program(self, params):
-        if not self.validatePassword(header=False):
-            return {'status': 'Error'}
         shutter=params.get('shutter', 0, type=str)
         self.LogDebug("program shutter \""+shutter+"\"")
         if (not shutter in self.config.Shutters):
