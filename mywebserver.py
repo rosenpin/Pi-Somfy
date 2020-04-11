@@ -124,6 +124,8 @@ class FlaskAppWrapper(MyLog):
         return {'status': 'OK'}
 
     def stop(self, params):
+        if not self.validatePassword():
+            return {'status': 'ERROR'}
         shutter=params.get('shutter', 0, type=str)
         self.LogDebug("stop shutter \""+shutter+"\"")
         if (not shutter in self.config.Shutters):
