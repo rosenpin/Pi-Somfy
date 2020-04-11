@@ -88,6 +88,14 @@ class FlaskAppWrapper(MyLog):
             self.LogErrorLine("Error in Process Command: " + command + ": " + str(e1))
             return Response("Error: Exception occured", status=400)
 
+    def validatePassword(self):
+        password = request.headers.get("Password")
+        if password != self.config.Password:
+            self.LogDebug("received invalid password")
+            self.LogDebug(password)
+            return False
+        return True
+
     def shutdown_server(self):
         func = request.environ.get('werkzeug.server.shutdown')
         if func is None:
@@ -96,6 +104,8 @@ class FlaskAppWrapper(MyLog):
         return Response("Shutting Down", status=400)
         
     def up(self, params):
+        if not self.validatePassword():
+            return {'status': 'ERROR'}
         shutter=params.get('shutter', 0, type=str)
         self.LogDebug("rise shutter \""+shutter+"\"")
         if (not shutter in self.config.Shutters):
@@ -104,6 +114,8 @@ class FlaskAppWrapper(MyLog):
         return {'status': 'OK'}
 
     def down(self, params):
+        if not self.validatePassword():
+            return {'status': 'ERROR'}
         shutter=params.get('shutter', 0, type=str)
         self.LogDebug("lower shutter \""+shutter+"\"")
         if (not shutter in self.config.Shutters):
